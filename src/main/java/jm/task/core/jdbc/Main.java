@@ -16,12 +16,15 @@ public class Main {
         userService.saveUser("Сергей", "Петров", (byte) 21);
         userService.saveUser("Максим", "Сидоров", (byte) 23);
         List<User> users = userService.getAllUsers();
-        users.forEach(x -> System.out.println(x.toString()));
+        System.out.println(users);
 
-        userService.removeUserById(2);
-        System.out.println("\nПользватель с id = 2 удален\n");
+        /*
+        int removeByID = 2;
+        userService.removeUserById(removeByID);
+        System.out.printf("\nПользватель с id = %d удален\n", removeByID);
         users = userService.getAllUsers();
-        users.forEach(x -> System.out.println(x.toString()));
+        users.forEach(System.out::println);
+        */
 
         userService.cleanUsersTable();
         userService.dropUsersTable();

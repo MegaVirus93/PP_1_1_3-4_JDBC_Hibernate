@@ -62,6 +62,6 @@ public class User {
 
     @Override
     public String toString() {
-        return String.format("%d %s %s %d", id, name, lastName, age);
+        return id + "|" + name + "|" + lastName + "|" + age;
     }
 }
