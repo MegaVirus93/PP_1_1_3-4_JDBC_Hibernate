@@ -5,18 +5,18 @@ import java.sql.*;
 
 public class Util {
     private static final String URL = "jdbc:mysql://localhost";
-    private static final String ROOT = "root";
+    private static final String USER = "root";
     private static final String PASSWORD = "123456789";
     private static Connection connection = null;
 
     public static Statement getStatement() throws SQLException {
         if (connection == null) {
-            connection = DriverManager.getConnection(URL, ROOT, PASSWORD);
+            connection = DriverManager.getConnection(URL, USER, PASSWORD);
         }
         return connection.createStatement();
     }
 
-    public static void closeConnection() {
+    public static void close() {
         try {
             if (connection != null) {
                 connection.close();
