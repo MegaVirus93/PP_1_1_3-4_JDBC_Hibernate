@@ -14,7 +14,7 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void createUsersTable() {
-        try (Statement statement = Util.getStatement()) {
+        try (Statement statement = Util.getConnection().createStatement()) {
             statement.execute("CREATE DATABASE IF NOT EXISTS preproject114;");
             statement.execute("USE preproject114;");
             statement.execute("CREATE TABLE IF NOT EXISTS users" +
@@ -30,7 +30,7 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void dropUsersTable() {
-        try (Statement statement = Util.getStatement()) {
+        try (Statement statement = Util.getConnection().createStatement()) {
             statement.execute("DROP DATABASE IF EXISTS preproject114;");
         } catch (SQLException e) {
             System.err.println("Ошибка удаления базы данных: " + e);
@@ -38,7 +38,7 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void saveUser(String name, String lastName, byte age) {
-        try (Statement statement = Util.getStatement()) {
+        try (Statement statement = Util.getConnection().createStatement()) {
             statement.execute("USE preproject114;");
             statement.execute(String.format("INSERT INTO Users(Name, LastName, Age) VALUES('%s', '%s', %d);", name, lastName, age));
             System.out.printf("User с именем — %s добавлен в базу данных\n", name);
@@ -48,7 +48,7 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void removeUserById(long id) {
-        try (Statement statement = Util.getStatement()) {
+        try (Statement statement = Util.getConnection().createStatement()) {
             statement.execute("USE preproject114;");
             statement.execute("DELETE FROM users WHERE Id = " + id + ";");
         } catch (SQLException e) {
@@ -58,7 +58,7 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public List<User> getAllUsers() {
         List<User> users = new ArrayList<>();
-        try (Statement statement = Util.getStatement()) {
+        try (Statement statement = Util.getConnection().createStatement()) {
             statement.execute("USE preproject114;");
             ResultSet rs = statement.executeQuery("SELECT * FROM users");
             while (rs.next()) {
@@ -73,7 +73,7 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void cleanUsersTable() {
-        try (Statement statement = Util.getStatement()) {
+        try (Statement statement = Util.getConnection().createStatement()) {
             statement.execute("USE preproject114;");
             statement.execute("TRUNCATE TABLE users;");
         } catch (SQLException e) {
