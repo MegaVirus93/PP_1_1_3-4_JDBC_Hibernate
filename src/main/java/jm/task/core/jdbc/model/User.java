@@ -10,10 +10,11 @@ public class User {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "name")
+    @Column(name = "name", length = 20, nullable = false)
+
     private String name;
 
-    @Column(name = "lastname")
+    @Column(name = "lastname", length = 20, nullable = false)
     private String lastName;
 
     @Column(name = "age")
@@ -63,6 +64,11 @@ public class User {
 
     @Override
     public String toString() {
-        return "User {" + id + "|" + name + "|" + lastName + "|" + age + "}";
+        return "User{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", age=" + age +
+                '}';
     }
 }

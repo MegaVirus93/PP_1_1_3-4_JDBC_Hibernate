@@ -15,10 +15,17 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void createUsersTable() {
-        Transaction transaction = null;
-        try (Session session = Util.getSessionFactory().openSession()) {
-            transaction = session.beginTransaction();
-            session.createEntityGraph(User.class);
+        try (Session session = Util.getSessionFactory().getCurrentSession()) {
+            Transaction transaction = session.beginTransaction();
+            session.createSQLQuery("CREATE DATABASE IF NOT EXISTS preproject114;").executeUpdate();
+            session.createSQLQuery("USE preproject114;").executeUpdate();
+            session.createSQLQuery("CREATE TABLE IF NOT EXISTS users" +
+                    "(" +
+                    "Id BIGINT PRIMARY KEY AUTO_INCREMENT," +
+                    "Name VARCHAR(20) NOT NULL," +
+                    "LastName VARCHAR(20) NOT NULL," +
+                    "Age TINYINT CHECK(Age > 0)" +
+                    ");").executeUpdate();
             transaction.commit();
         } catch (Exception e) {
             System.err.println("Ошибка создания базы данных и таблицы: " + e);
@@ -27,8 +34,10 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void dropUsersTable() {
-        try (Session session = Util.getSessionFactory().openSession()) {
-//            session.createSQLQuery("DROP DATABASE IF EXISTS preproject114;").executeUpdate();
+        try (Session session = Util.getSessionFactory().getCurrentSession()) {
+            Transaction transaction = session.beginTransaction();
+            session.createSQLQuery("DROP DATABASE IF EXISTS preproject114;").executeUpdate();
+            transaction.commit();
         } catch (Exception e) {
             System.err.println("Ошибка удаления базы данных: " + e);
         }
@@ -36,9 +45,8 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void saveUser(String name, String lastName, byte age) {
-        Transaction transaction = null;
-        try (Session session = Util.getSessionFactory().openSession()) {
-            transaction = session.beginTransaction();
+        try (Session session = Util.getSessionFactory().getCurrentSession()) {
+            Transaction transaction = session.beginTransaction();
             session.save(new User(name, lastName, age));
             transaction.commit();
             System.out.printf("User с именем — %s добавлен в базу данных\n", name);
@@ -49,26 +57,39 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void removeUserById(long id) {
-
+        try (Session session = Util.getSessionFactory().getCurrentSession()) {
+            Transaction transaction = session.beginTransaction();
+            User user = session.byId(User.class).load(id);
+            if (user != null) {
+                session.delete(user);
+            }
+            transaction.commit();
+        } catch (Exception e) {
+            System.err.println("Ошибка удаления пользователя из таблицы: " + e);
+        }
     }
 
     @Override
     public List<User> getAllUsers() {
-        try (Session session = Util.getSessionFactory().openSession()) {
-            return session.createQuery("from User", User.class).list();        } catch (Exception e) {
+        List<User> list = null;
+        try (Session session = Util.getSessionFactory().getCurrentSession()) {
+            Transaction transaction = session.beginTransaction();
+            list = session.createQuery("from User", User.class).list();
+            transaction.commit();
+        } catch (Exception e) {
+            System.err.println("Ошибка экспорта пользователей из таблицы в лист: " + e);
         }
-        return null;
+        return list;
     }
 
     @Override
     public void cleanUsersTable() {
-        Transaction transaction = null;
-        try (Session session = Util.getSessionFactory().openSession()) {
-            transaction = session.beginTransaction();
-            session.clear();
+        try (Session session = Util.getSessionFactory().getCurrentSession()) {
+            Transaction transaction = session.beginTransaction();
+            session.createQuery("delete User").executeUpdate();
             transaction.commit();
         } catch (Exception e) {
-            System.err.println("Ошибка сохранения пользователя в таблице: " + e);
+            System.err.println("Ошибка чистки таблицы: " + e);
         }
     }
 }

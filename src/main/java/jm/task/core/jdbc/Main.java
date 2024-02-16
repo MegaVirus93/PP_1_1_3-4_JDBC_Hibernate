@@ -12,23 +12,15 @@ public class Main {
         UserService userService = new UserServiceImpl();
         userService.createUsersTable();
 
-        userService.saveUser("vitya", "ivanov", (byte) 19);
+        userService.saveUser("Витя", "Иванов", (byte) 19);
         userService.saveUser("Олег", "Сергеев", (byte) 20);
         userService.saveUser("Сергей", "Петров", (byte) 21);
         userService.saveUser("Максим", "Сидоров", (byte) 23);
         List<User> users = userService.getAllUsers();
         System.out.println(users);
 
-        /*
-        int removeByID = 2;
-        userService.removeUserById(removeByID);
-        System.out.printf("\nПользватель с id = %d удален\n", removeByID);
-        users = userService.getAllUsers();
-        users.forEach(System.out::println);
-        */
-
         userService.cleanUsersTable();
-//        userService.dropUsersTable();
+        userService.dropUsersTable();
         Util.close();
     }
 }
