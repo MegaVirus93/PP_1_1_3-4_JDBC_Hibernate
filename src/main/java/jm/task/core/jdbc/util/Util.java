@@ -2,6 +2,7 @@ package jm.task.core.jdbc.util;
 
 
 import jm.task.core.jdbc.model.User;
+import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
@@ -27,7 +28,7 @@ public class Util {
         return connection;
     }
 
-    public static SessionFactory getSessionFactory() {
+    public static SessionFactory getSessionFactory() throws HibernateException {
         if (sessionFactory == null) {
             Configuration configuration = new Configuration();
 

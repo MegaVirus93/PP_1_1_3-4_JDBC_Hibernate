@@ -2,6 +2,7 @@ package jm.task.core.jdbc.dao;
 
 import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -28,7 +29,7 @@ public class UserDaoHibernateImpl implements UserDao {
                     "Age TINYINT CHECK(Age > 0)" +
                     ");").executeUpdate();
             transaction.commit();
-        } catch (Exception e) {
+        } catch (HibernateException e) {
             if (transaction != null) {
                 transaction.rollback();
             }
@@ -43,7 +44,7 @@ public class UserDaoHibernateImpl implements UserDao {
             transaction = session.beginTransaction();
             session.createSQLQuery("DROP DATABASE IF EXISTS preproject114;").executeUpdate();
             transaction.commit();
-        } catch (Exception e) {
+        } catch (HibernateException e) {
             if (transaction != null) {
                 transaction.rollback();
             }
@@ -59,7 +60,7 @@ public class UserDaoHibernateImpl implements UserDao {
             session.save(new User(name, lastName, age));
             transaction.commit();
             System.out.printf("User с именем — %s добавлен в базу данных\n", name);
-        } catch (Exception e) {
+        } catch (HibernateException e) {
             if (transaction != null) {
                 transaction.rollback();
             }
@@ -77,7 +78,7 @@ public class UserDaoHibernateImpl implements UserDao {
                 session.delete(user);
             }
             transaction.commit();
-        } catch (Exception e) {
+        } catch (HibernateException e) {
             if (transaction != null) {
                 transaction.rollback();
             }
@@ -90,7 +91,7 @@ public class UserDaoHibernateImpl implements UserDao {
         List<User> list = null;
         try (Session session = Util.getSessionFactory().openSession()) {
             list = session.createQuery("from User", User.class).list();
-        } catch (Exception e) {
+        } catch (HibernateException e) {
             System.err.println("Ошибка экспорта пользователей из таблицы в лист: " + e);
         }
         return list;
@@ -103,7 +104,7 @@ public class UserDaoHibernateImpl implements UserDao {
             transaction = session.beginTransaction();
             session.createQuery("delete User").executeUpdate();
             transaction.commit();
-        } catch (Exception e) {
+        } catch (HibernateException e) {
             if (transaction != null) {
                 transaction.rollback();
             }
